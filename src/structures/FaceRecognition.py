@@ -2,7 +2,6 @@ import cv2  # Importar o OpenCV para manipular imagens
 import mediapipe as mp  # Importar o MediaPipe para detecção de rostos
 import os  # Importar o módulo "os" para manipular arquivos
 
-
 class FaceRecognition:
     def __init__(self):
         # Instanciar o módulo de detecção de rostos
