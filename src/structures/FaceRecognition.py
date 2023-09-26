@@ -40,3 +40,24 @@ class FaceRecognition:
         cv2.destroyAllWindows()  # Fechar todas as janelas abertas pelo OpenCV
 
         return faces.detections
+    
+    def recognizeFace(self, image_path):
+        print("Reconhecendo rostos...")
+
+        image = cv2.imread(image_path)
+
+        faces = self.faceDetector.process(image)
+
+        if faces.detections:
+            for face in faces.detections:
+                self.drawing.draw_detection(image, face)
+                cv2.imshow("Reconhecimento facial", image)
+        else:
+            return None
+
+        # Para fechar a janela da webcam, basta apertar a tecla "ESC"
+        if cv2.waitKey(5) == 27:
+            return None  # Retornar "None" caso o usuário aperte a tecla "ESC"
+        cv2.destroyAllWindows()  # Fechar todas as janelas abertas pelo OpenCV
+
+        return faces.detections

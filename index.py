@@ -74,14 +74,141 @@ def check():
                     "Não foi possível tirar a foto, pois não detectamos nenhum rosto. Tente novamente.")
         case "2":
             # Reconhecimento facial pela imagem
-            print("Reconhecimento facial pela imagem")
+
+            # Instanciando a classe de reconhecimento facial
+            faceRecognition = FaceRecognition()
+
+            # Perguntar o nome da pessoa
+            name = input("Digite o nome da pessoa: ")
+
+            # Verificar se o nome informado é um caminho de uma imagem (usar o os), caso for, mostrar uma mensagem de erro
+            if os.path.exists(name) or name.endswith(".jpg") or name.endswith(".jpeg"):
+                print("O nome informado é um caminho de uma imagem. Tente novamente.")
+                return None
+
+            # Perguntar o caminho da imagem
+            image_path = input(
+                "Digite o caminho da imagem que deseja fazer o reconhecimento facial: ")
+            
+            # Verificar a extensão da imagem
+            if image_path.endswith(".jpeg"):
+                # Converter para .jpg
+                image_path = image_path.replace(".jpeg", ".jpg")
+
+            # Verificar se o caminho da imagem existe
+            if os.path.exists(image_path):
+                # Fazer o reconhecimento facial
+                face = faceRecognition.recognizeFace(image_path)
+                if face:
+                    # Se o rosto for detectado, mostrar o nome da pessoa
+                    print(f"Olá, {name}! Seu rosto foi detectado!")
+
+                    # Pegar a imagem para salvar no banco de dados
+                    image = cv2.imread(image_path)
+
+                    print("Salvando no banco de dados...")
+
+                    def getImageFromFile(image):
+                        res = np.fromfile(image, dtype=np.uint8)
+                        print(res)
+                        return cv2.imdecode(res, cv2.IMREAD_UNCHANGED)
+
+                    get_image = getImageFromFile(image_path)
+
+                    def getBytesFromImage(image):
+                        return cv2.imencode('.jpg', image)[1].tobytes()
+
+                    get_bytes = getBytesFromImage(get_image)
+
+                    database.insert(name, get_bytes)
+
+                    print("Foto cadastrada com sucesso!")
+
+                    # Deletar a imagem do diretório "assets/faces"
+                    print("Deletando a imagem do diretório...")
+
+                    # Esperar 5 segundos para deletar a imagem
+                    time.sleep(5)
+
+                    os.remove(image_path)
+
+                    print("Imagem deletada com sucesso!")
+                else:
+                    # Se o rosto não for detectado, mostrar uma mensagem de erro
+                    print("Não foi possível detectar o seu rosto. Tente novamente.")
+            else:
+                # Se o caminho da imagem não existir, mostrar uma mensagem de erro
+                print("O caminho da imagem não existe. Tente novamente.")
+
+            #
         case "3":
             # Cadastrar uma pessoa
-            print("Cadastrar uma pessoa")
+
+            # Perguntar o nome da pessoa
+            name = input("Digite o nome da pessoa: ")
+
+            # Verificar se o nome informado é um caminho de uma imagem (usar o os), caso for, mostrar uma mensagem de erro
+            if os.path.exists(name) or name.endswith(".jpg") or name.endswith(".jpeg"):
+                print("O nome informado é um caminho de uma imagem. Tente novamente.")
+                return None
+
+            # Perguntar o caminho da imagem
+            image_path = input(
+                "Digite o caminho da imagem que deseja cadastrar: ")
+            
+            # Verificar a extensão da imagem
+            if image_path.endswith(".jpeg"):
+                # Converter para .jpg
+                image_path = image_path.replace(".jpeg", ".jpg")
+
+            # Verificar se o caminho da imagem existe
+            if os.path.exists(image_path):
+                # Fazer o reconhecimento facial
+                face = faceRecognition.recognizeFace(image_path)
+                if face:
+                    # Se o rosto for detectado, mostrar o nome da pessoa
+                    print(f"Olá! O rosto de {name} foi detectado!")
+
+                    # Pegar a imagem para salvar no banco de dados
+                    image = cv2.imread(image_path)
+
+                    print("Salvando no banco de dados...")
+
+                    def getImageFromFile(image):
+                        res = np.fromfile(image, dtype=np.uint8)
+                        print(res)
+                        return cv2.imdecode(res, cv2.IMREAD_UNCHANGED)
+
+                    get_image = getImageFromFile(image_path)
+
+                    def getBytesFromImage(image):
+                        return cv2.imencode('.jpg', image)[1].tobytes()
+
+                    get_bytes = getBytesFromImage(get_image)
+
+                    database.insert(name, get_bytes)
+
+                    print("Foto cadastrada com sucesso!")
+
+                    # Deletar a imagem do diretório "assets/faces"
+                    print("Deletando a imagem do diretório...")
+
+                    # Esperar 5 segundos para deletar a imagem
+                    time.sleep(5)
+
+                    os.remove(image_path)
+
+                    print("Imagem deletada com sucesso!")
+                else:
+                    # Se o rosto não for detectado, mostrar uma mensagem de erro
+                    print("Não foi possível detectar o seu rosto. Tente novamente.")
+            else:
+                # Se o caminho da imagem não existir, mostrar uma mensagem de erro
+                print("O caminho da imagem não existe. Tente novamente.")
         case _:
             # Opção inválida
             print("\n\nOpção inválida. Tente novamente.")
 
 
-# Chamando a função "check"
+# Chamando a função "check" para iniciar o programa
 check()
