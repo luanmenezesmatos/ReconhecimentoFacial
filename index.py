@@ -20,7 +20,7 @@ timestamp = str(datetime.datetime.now().timestamp()).replace(".", "")
 
 def check():
     # Pergunta
-    pergunta = input("Olá! Seja bem-vindo(a) ao sistema de reconhecimento facial! Selecione as opções abaixo:\n\n1 - Reconhecimento facial pela câmera (Webcam)\n2 - Reconhecimento facial pela imagem\n3 - Cadastrar uma pessoa\n\nDigite a opção desejada: ")
+    pergunta = input("Olá! Seja bem-vindo(a) ao sistema de reconhecimento facial! Selecione as opções abaixo:\n\n1 - Reconhecimento facial pela câmera (Webcam)\n2 - Reconhecimento facial pela imagem\n3 - Cadastrar uma pessoa\n4- Fazer o reconhecimento facial\n\nDigite a opção desejada: ")
 
     # Verificar se a opção digitada é válida
     match pergunta:
@@ -205,6 +205,21 @@ def check():
             else:
                 # Se o caminho da imagem não existir, mostrar uma mensagem de erro
                 print("O caminho da imagem não existe. Tente novamente.")
+        case 4:
+            # Fazer o reconhecimento facial (pela câmera ou pela imagem) no banco de dados
+
+            # Perguntar o nome da pessoa
+            name = input("Digite o nome da pessoa: ")
+
+            # Verificar se o nome informado é um caminho de uma imagem (usar o os), caso for, mostrar uma mensagem de erro
+            if os.path.exists(name) or name.endswith(".jpg") or name.endswith(".jpeg"):
+                print("O nome informado é um caminho de uma imagem. Tente novamente.")
+                return None
+            
+            # Verificar se o nome informado existe no banco de dados
+
+
+            
         case _:
             # Opção inválida
             print("\n\nOpção inválida. Tente novamente.")
