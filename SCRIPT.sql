@@ -10,8 +10,12 @@ USE `db_recfacial`;
 CREATE TABLE IF NOT EXISTS `faces` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
-  `image` VARCHAR(255) NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `image` BLOB NULL,
   PRIMARY KEY (`id`)
 );
+
+SHOW TABLES;
+
+SELECT * FROM faces;
+
+SELECT image FROM faces WHERE name = "LuanMenezes";

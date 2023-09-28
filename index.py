@@ -8,6 +8,8 @@ import time  # Importar o módulo "time" para manipular o tempo
 from src.structures.Database import Database
 # Importando o arquivo de reconhecimento facial
 from src.structures.FaceRecognition import FaceRecognition
+# Importando o arquivo de busca e comparação de rostos no banco de dados
+from src.structures.DatabaseSearch import DatabaseSearch
 
 # Instanciando a classe do banco de dados
 database = Database(host="localhost", user="root",
@@ -15,9 +17,25 @@ database = Database(host="localhost", user="root",
 
 timestamp = str(datetime.datetime.now().timestamp()).replace(".", "")
 
+# Criando a função que irá pegar a imagem do rosto da pessoa no banco de dados
+def search(name, image_path):
+    # Instanciando a classe de busca no banco de dados
+    databaseSearch = DatabaseSearch()
+
+    # Buscar a imagem do rosto da pessoa no banco de dados
+    result = databaseSearch.search(name, image_path)
+
+    print(result)
+
+    # Se o resultado for "False", então não foi encontrado nenhuma imagem igual ou parecida no banco de dados
+    if result == False:
+        print("Não foi encontrado nenhuma imagem igual ou parecida no banco de dados.")
+
+    # Se não, então foi encontrado uma imagem igual ou parecida no banco de dados
+    else:
+        print(f"Olá, {name}! Seu rosto foi detectado!")
+
 # Criando a função para perguntar se a pessoa deseja usar o reconhecimento facial pela câmera (webcam) ou pela imagem
-
-
 def check():
     # Pergunta
     pergunta = input("Olá! Seja bem-vindo(a) ao sistema de reconhecimento facial! Selecione as opções abaixo:\n\n1 - Reconhecimento facial pela câmera (Webcam)\n2 - Reconhecimento facial pela imagem\n3 - Cadastrar uma pessoa\n4- Fazer o reconhecimento facial\n\nDigite a opção desejada: ")
@@ -169,9 +187,6 @@ def check():
                     # Se o rosto for detectado, mostrar o nome da pessoa
                     print(f"Olá! O rosto de {name} foi detectado!")
 
-                    # Pegar a imagem para salvar no banco de dados
-                    image = cv2.imread(image_path)
-
                     print("Salvando no banco de dados...")
 
                     def getImageFromFile(image):
@@ -205,21 +220,33 @@ def check():
             else:
                 # Se o caminho da imagem não existir, mostrar uma mensagem de erro
                 print("O caminho da imagem não existe. Tente novamente.")
-        case 4:
+        case "4":
             # Fazer o reconhecimento facial (pela câmera ou pela imagem) no banco de dados
 
             # Perguntar o nome da pessoa
-            name = input("Digite o nome da pessoa: ")
+            name = input("Digite o seu nome: ")
+
+            # Verificar se o nome existe no banco de dados
+            if not database.select(name):
+                # Se não existir, mostrar uma mensagem de erro
+                print("O seu nome não foi encontrado no banco de dados! Tente novamente.")
+                return None
 
             # Verificar se o nome informado é um caminho de uma imagem (usar o os), caso for, mostrar uma mensagem de erro
             if os.path.exists(name) or name.endswith(".jpg") or name.endswith(".jpeg"):
                 print("O nome informado é um caminho de uma imagem. Tente novamente.")
                 return None
-            
-            # Verificar se o nome informado existe no banco de dados
 
+            # Pedir para inserir o caminho da imagem
+            image_path = input("Digite o nome da imagem junto com a extensão para inserir no caminho (coloque a imagem dentro do diretório /assets/images/): ")
 
-            
+            # Verificar se o caminho da imagem existe
+            if os.path.exists(os.path.join(os.getcwd() + "/assets/images", image_path)):
+                # Fazer o reconhecimento facial
+                search(name, image_path)
+            else:
+                # Se o caminho da imagem não existir, mostrar uma mensagem de erro
+                print("O caminho da imagem não existe. Tente novamente.")
         case _:
             # Opção inválida
             print("\n\nOpção inválida. Tente novamente.")
