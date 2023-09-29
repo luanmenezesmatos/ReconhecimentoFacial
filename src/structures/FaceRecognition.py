@@ -25,7 +25,7 @@ class FaceRecognition:
         if faces.detections:  # Se algum rosto for detectado
             for face in faces.detections:  # Para cada rosto detectado na imagem
                 # Desenhar um retângulo em volta do rosto
-                self.drawing.draw_detection(image, face)
+                """ self.drawing.draw_detection(image, face) """
 
                 # Salvar a imagem na pasta assets/faces
                 file_name = f"{name}-{timestamp}.jpg"

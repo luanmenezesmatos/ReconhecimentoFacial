@@ -38,7 +38,7 @@ def search(name, image_path):
 # Criando a função para perguntar se a pessoa deseja usar o reconhecimento facial pela câmera (webcam) ou pela imagem
 def check():
     # Pergunta
-    pergunta = input("Olá! Seja bem-vindo(a) ao sistema de reconhecimento facial! Selecione as opções abaixo:\n\n1 - Reconhecimento facial pela câmera (Webcam)\n2 - Reconhecimento facial pela imagem\n3 - Cadastrar uma pessoa\n4- Fazer o reconhecimento facial\n\nDigite a opção desejada: ")
+    pergunta = input("Olá! Seja bem-vindo(a) ao sistema de reconhecimento facial! Selecione as opções abaixo:\n\n1 - Reconhecimento facial pela câmera (Webcam)\n2 - Reconhecimento facial pela imagem\n3 - Cadastrar uma pessoa\n4 - Fazer o reconhecimento facial\n\nDigite a opção desejada: ")
 
     # Verificar se a opção digitada é válida
     match pergunta:

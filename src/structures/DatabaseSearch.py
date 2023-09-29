@@ -17,36 +17,31 @@ class DatabaseSearch:
         # Instanciar a classe do banco de dados
         self.database = Database(host="localhost", user="root", password="", database="db_recfacial")
 
-    # Criando a função de comparação de imagens usando o algoritmo "ORB"
-    def compare(self, face1, face2):
-        # Fazer a comparação das imagens usando algoritmos de visão computacional do OpenCV
-        # O algoritmo "ORB" é um algoritmo de visão computacional que compara imagens
-
-        # Instanciar o algoritmo "ORB"
+    # Criando a função de comparação de imagens de forma diferente, pois ele sempre retorna "True" para qualquer imagem, mesmo que não seja igual ou parecida
+    def compare(self, image1, image2):
+        # Instanciar o módulo "ORB" para fazer a comparação de imagens
         orb = cv2.ORB_create()
 
-        # Extrair as características da imagem do rosto da pessoa
-        kp1, des1 = orb.detectAndCompute(face1)
+        # Detectar os pontos de interesse e as descritores das imagens
+        keypoints1, descriptors1 = orb.detectAndCompute(image1, None)
+        keypoints2, descriptors2 = orb.detectAndCompute(image2, None)
 
-        # Extrair as características da imagem do rosto da pessoa
-        kp2, des2 = orb.detectAndCompute(face2)
-
-        # Instanciar o algoritmo "BFMatcher"
+        # Instanciar o módulo "BFMatcher" para fazer a comparação de imagens
         bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
 
-        # Fazer a comparação das características das imagens
-        matches = bf.match(des1, des2)
+        # Fazer a comparação das imagens
+        matches = bf.match(descriptors1, descriptors2)
 
-        # Ordenar as características das imagens
+        # Ordenar os resultados da comparação
+        # Os resultados não estão sendo precisos, pois ele está ordenando os resultados de forma errada e está retornando "True" para qualquer imagem
         matches = sorted(matches, key=lambda x: x.distance)
 
-        print(len(matches))
-
-        # Se a quantidade de características for maior que 20, retornar "True"
-        if len(matches) > 20:
+        # Se o número de resultados for maior que 10, retornar "True"
+        if len(matches) > 10:
             return True
         else:
             return False
+
     
     # A função "search" irá receber a foto do rosto da pessoa e irá buscar no banco de dados por uma imagem igual ou parecida
     def search(self, name, face):
@@ -64,6 +59,7 @@ class DatabaseSearch:
         # compare = self.compare(cv2.imread(face), cv2.imread(f"assets/temp/{name}.png"))
 
         compare = self.compare(cv2.imread(f"assets/images/{face}"), cv2.imread(f"assets/temp/{name}.png"))
+
         """ face_path = os.path.join(os.getcwd(), "assets", "images", face)
         name_path = os.path.join(os.getcwd(), "assets", "temp", f"{name}.png")
 
