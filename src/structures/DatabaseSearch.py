@@ -12,36 +12,34 @@ import os
 # Importar o módulo "time" para fazer uma pausa
 import time
 
+# Importar o módulo "mediapipe" para detecção de rostos
+import mediapipe as mp
+
 class DatabaseSearch:
     def __init__(self):
         # Instanciar a classe do banco de dados
         self.database = Database(host="localhost", user="root", password="", database="db_recfacial")
 
-    # Criando a função de comparação de imagens de forma diferente, pois ele sempre retorna "True" para qualquer imagem, mesmo que não seja igual ou parecida
     def compare(self, image1, image2):
-        # Instanciar o módulo "ORB" para fazer a comparação de imagens
-        orb = cv2.ORB_create()
+        # Instanciar o módulo de detecção de rostos
+        faceDetection = mp.solutions.face_detection
 
-        # Detectar os pontos de interesse e as descritores das imagens
-        keypoints1, descriptors1 = orb.detectAndCompute(image1, None)
-        keypoints2, descriptors2 = orb.detectAndCompute(image2, None)
+        # Instanciar o detector de rostos
+        faceDetector = faceDetection.FaceDetection()
 
-        # Instanciar o módulo "BFMatcher" para fazer a comparação de imagens
-        bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+        # Ler as imagens
+        image1 = cv2.imread(image1)
+        image2 = cv2.imread(image2)
 
-        # Fazer a comparação das imagens
-        matches = bf.match(descriptors1, descriptors2)
+        # Detectar os rostos nas imagens
+        faces1 = faceDetector.process(image1)
+        faces2 = faceDetector.process(image2)
 
-        # Ordenar os resultados da comparação
-        # Os resultados não estão sendo precisos, pois ele está ordenando os resultados de forma errada e está retornando "True" para qualquer imagem
-        matches = sorted(matches, key=lambda x: x.distance)
-
-        # Se o número de resultados for maior que 10, retornar "True"
-        if len(matches) > 10:
+        # Se algum rosto for detectado, retornar "True" (verdadeiro) caso contrário, retornar "False" (falso)
+        if faces1.detections and faces2.detections:
             return True
         else:
             return False
-
     
     # A função "search" irá receber a foto do rosto da pessoa e irá buscar no banco de dados por uma imagem igual ou parecida
     def search(self, name, face):
@@ -58,12 +56,12 @@ class DatabaseSearch:
 
         # compare = self.compare(cv2.imread(face), cv2.imread(f"assets/temp/{name}.png"))
 
-        compare = self.compare(cv2.imread(f"assets/images/{face}"), cv2.imread(f"assets/temp/{name}.png"))
+        #compare = self.compare(cv2.imread(f"assets/images/{face}"), cv2.imread(f"assets/temp/{name}.png"))
 
-        """ face_path = os.path.join(os.getcwd(), "assets", "images", face)
+        face_path = os.path.join(os.getcwd(), "assets", "images", face)
         name_path = os.path.join(os.getcwd(), "assets", "temp", f"{name}.png")
 
-        compare = self.compare(face_path, name_path) """
+        compare = self.compare(face_path, name_path)
 
         if compare == True:
             print("Deletando a imagem temporária...")

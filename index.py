@@ -52,6 +52,7 @@ def check():
             print(f"Olá, {name}! Vamos tirar uma foto sua!")
 
             faces = faceRecognition.detectFace(name, timestamp)
+            print(faces)
             if faces:
                 for face in faces:
                     if face:
@@ -141,16 +142,6 @@ def check():
                     database.insert(name, get_bytes)
 
                     print("Foto cadastrada com sucesso!")
-
-                    # Deletar a imagem do diretório "assets/faces"
-                    print("Deletando a imagem do diretório...")
-
-                    # Esperar 5 segundos para deletar a imagem
-                    time.sleep(5)
-
-                    os.remove(image_path)
-
-                    print("Imagem deletada com sucesso!")
                 else:
                     # Se o rosto não for detectado, mostrar uma mensagem de erro
                     print("Não foi possível detectar o seu rosto. Tente novamente.")
